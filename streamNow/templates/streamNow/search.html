@@ -1,0 +1,42 @@
+{% extends "streamNow/main.html" %}
+{% block content %}
+
+<div class="container pt-4" >
+    <div class="row justify-content-center">
+
+        <!-- Search form -->
+        <form action="/search" method="GET" class="col-md-6 form-group" id="search-form">
+            <div class=" search text-center">
+                <div class="form-group">
+                    <label for="search-query">Enter search here:</label>
+                    <input type="text" class="form-control" name="searchQuery" id="search-query" placeholder="">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm" id="search-button">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+        <!-- End search form -->
+        <!-- Data from search will go here -->
+    <div class="row overflow-auto justify-content-center">
+        {{!-- <p>Search data will go here</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore voluptatum reiciendis rem repellat voluptatibus minima placeat doloremque in consectetur, maxime quidem alias quos aut nostrum a blanditiis maiores fuga quod?</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto, iure qui voluptate sunt eos hic tempora explicabo cumque quasi esse magni a. Odio nobis aperiam amet expedita! Consequatur, veritatis ullam?</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore voluptatum reiciendis rem repellat voluptatibus minima placeat doloremque in consectetur, maxime quidem alias quos aut nostrum a blanditiis maiores fuga quod?</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto, iure qui voluptate sunt eos hic tempora explicabo cumque quasi esse magni a. Odio nobis aperiam amet expedita! Consequatur, veritatis ullam?</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum quisquam fuga corrupti magnam eius ipsum aliquam sed facere? Inventore aut omnis alias tempore error ullam, velit soluta voluptates! Consequuntur, a?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates perspiciatis qui nobis assumenda? Cumque dignissimos magni error. Pariatur fuga soluta, impedit optio illum blanditiis ipsam provident nostrum, est alias necessitatibus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam molestiae, rem quod ipsa dolore hic labore consectetur iste natus dicta alias fugit, sapiente, distinctio laborum quidem impedit mollitia velit minus.</p> --}}
+        <div class="row" id="search-container">
+            <p>Your search results will appear here</p>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+{% endblock content %}
