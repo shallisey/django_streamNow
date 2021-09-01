@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import Post
 import requests
 import pprint
 
@@ -17,7 +18,6 @@ hardcode_data = [{
 def home(request):
 
     data = requests.get('https://api.themoviedb.org/3/trending/movie/day?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f').json()
-    pprint.pprint(data['results'][0])
     results = []
     # Grab data from response if there is any and get the first ten.
     if data:
@@ -25,8 +25,10 @@ def home(request):
             results.append(data['results'][i])
             # pprint.pprint(data['results'][i])
     context = {
-        'data': results
+        'data': results,
+        'posts': Post.objects.all()
     }
+    pprint.pprint(context['posts'])
     return render(request, 'streamNow/home.html', context)
 
 def about(request):
