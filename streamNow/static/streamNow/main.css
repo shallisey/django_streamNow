@@ -74,6 +74,14 @@ ul li {
     width: 50%;
 }
 
+
+
+#bootstrap-overrides .nav-item .nav-link{
+    color: #fcfcfc;
+
+}
+
+
 /* img {
     width: auto;
     height: 100%;
@@ -81,10 +89,12 @@ ul li {
 } */
 .nav-color-not-bootstrap {
     background: #DAF7A6;
+    color: white;
 }
 
+
 .text-border {
-        color: white;
+        color: white !important;
         font-size: 50px;
         text-shadow: -1px 1px 0 #000,
                       1px 1px 0 #000,
