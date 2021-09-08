@@ -1,19 +1,10 @@
 from django.shortcuts import render
+from django.views.generic import View, DetailView
 from .models import Post
 import requests
 import pprint
 
-hardcode_data = [{
-    "overview": 'An agoraphobic woman living alone in New York begins spying on her new neighbors only to witness a disturbing act of violence.',
-    'title': 'The Woman in the Window',
-    'media': 'movie'
-    },
-    {
-    'overview': 'A woman wakes in a cryogenic chamber with no recollection of how she got there, and must find a way out before running out of air.',
-    'title': 'Oxygen',
-    'media': 'movie'
-    }
-]
+
 
 def home(request):
 
@@ -30,6 +21,46 @@ def home(request):
     }
     pprint.pprint(context['posts'])
     return render(request, 'streamNow/home.html', context)
+
+
+class HomePage(View):
+    all_trending = requests.get('https://api.themoviedb.org/3/trending/movie/day?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f').json()
+
+    def get(self, request):
+        top_trending = []
+        if self.all_trending:
+            for i in range(9):
+                top_trending.append(self.all_trending['results'][i])
+
+        context = {
+            'data': top_trending
+        }
+
+        return render(request, 'streamNow/home.html', context)
+
+    def post(self, request):
+        pass
+
+
+class MediaDetailView(DetailView):
+
+    def get(self, request, media_type, _id):
+        response = requests.get(f'https://api.themoviedb.org/3/{media_type}/{_id}?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f&language=en-US').json()
+        context = {}
+
+        # If there is a response then add values to the context
+        # Title, oveview, image, rating, genres, maybe similar movies
+        if response:
+            print(response)
+
+
+
+
+        return render(request, 'streamNow/media_detail.html', context)
+
+    def post(self, request):
+        pass
+
 
 def about(request):
     return render(request, 'streamNow/about.html')

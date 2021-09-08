@@ -1,0 +1,28 @@
+{% extends "streamNow/main.html" %}
+
+
+{% block content %}
+    <div class="container">
+        {% if object %}
+      <div class="row justify-content-center">
+          <div class="col-sm-2 col-md-3 col-lg-4">
+            <div class="card-deck">
+              <div class="card">
+                <img src="https://image.tmdb.org/t/p/w342{{object.poster_path}}" alt="{{object.title}}" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title">{{ object }}</h5>
+                  <p class="card-text">
+                    {{ object.media_type }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+      </div>
+        {% else %}
+        <p>Nothing here</p>
+        {% endif %}
+    </div>
+  </div>
+{% endblock content %}

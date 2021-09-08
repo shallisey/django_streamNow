@@ -1,9 +1,10 @@
 from django.urls import path
+from .views import HomePage, MediaDetailView
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='streamNow-home'),
+    path('', HomePage.as_view(), name='streamNow-home'),
+    path('<str:media_type>/<int:_id>/', MediaDetailView.as_view(), name='media-detail'),
     path('about/', views.about, name='streamNow-about'),
     path('search/', views.search, name='streamNow-search')
-
 ]
