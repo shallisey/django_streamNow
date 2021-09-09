@@ -2,27 +2,98 @@
 
 
 {% block content %}
-    <div class="container">
-        {% if object %}
-      <div class="row justify-content-center">
-          <div class="col-sm-2 col-md-3 col-lg-4">
-            <div class="card-deck">
-              <div class="card">
-                <img src="https://image.tmdb.org/t/p/w342{{object.poster_path}}" alt="{{object.title}}" class="card-img-top">
-                <div class="card-body">
-                  <h5 class="card-title">{{ object }}</h5>
-                  <p class="card-text">
-                    {{ object.media_type }}
-                  </p>
-                </div>
-              </div>
-            </div>
 
-          </div>
-      </div>
-        {% else %}
-        <p>Nothing here</p>
-        {% endif %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-6">
+            <div class="card-deck">
+                <div class="card">
+                    <img src="https://image.tmdb.org/t/p/original{{poster_path}}" alt="{{name}}" class="card-img-top">
+                    <div class="card-deck">
+                        <div class="card">
+                            <div class="card-body">
+                                
+                                <h5 class="card-title">
+                                    {% if homepage %}
+                                    <a href="{{homepage}}">{{name}}</a>
+                                    {% else %}
+                                    {{ name }}
+                                    {% endif %}
+                                </h5>
+                                <p class="card-text">
+                                    {{ overview }}
+                                </p>
+
+                                {% if genres %}
+                                <div class="row justify-content-left">
+                                    <h6 class="card-text" style="font-size: 1.2em">
+                                        {% for item in genres %}
+                                        {% if forloop.last %}
+                                         {{ item.name }}
+                                        {% else %}
+                                         {{ item.name }},
+                                        {% endif %}
+                                        {%  endfor %}
+                                    </h6>
+                                    {% if production_companies %}
+                                    <p>
+                                        {% for item in production_companies %}
+                                        {% if forloop.last %}
+                                         {{ item.name }}
+                                        {% else %}
+                                         {{ item.name }},
+                                        {% endif %}
+                                        {%  endfor %}
+                                    </p>
+                                    {% endif %}
+
+
+
+                                </div>
+                                {% endif %}
+<!--            RELEASE DATE INFORMATION                    -->
+                                <div class="row" id="release-details">
+                                    {% if release_date %}
+                                    <div class="col-xs-6 col-md-6">
+                                        <h4>Release Date: </h4>
+                                        <p>{{ release_date }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if runtime %}
+                                    <div class="col-xs-6 col-md-6">
+                                        <h4>Running Time: </h4>
+
+                                        <p>{{runtime}}</p>
+
+                                    </div>
+                                    {% endif %}
+
+                                    {% if revenue %}
+                                    <div class="col-xs-6 col-md-6">
+                                        <h4>Box Office: </h4>
+                                        <p>{{revenue}}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if vote_average %}
+                                    <div class="col-xs-6 col-md-6">
+                                        <h4>Vote Average: </h4>
+                                        <p>{{vote_average}}/10</p>
+                                    </div>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+<div class="container">
+    <div>FORM GO HERE</div>
+</div>
 {% endblock content %}
