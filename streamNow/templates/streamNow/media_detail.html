@@ -1,18 +1,33 @@
 {% extends "streamNow/main.html" %}
 
+{% load crispy_forms_tags %}
 
 {% block content %}
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-sm-6">
+             {% for post in posts %}
+                    <article class="media content-section">
+                      <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+                      <div class="media-body">
+                        <div class="article-metadata">
+                          <a class="mr-2" href="#">{{ post.author }}</a>
+                          <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+                        </div>
+                        <h2><a class="article-title" href="{% url 'media-detail' post.media_type post.id_media_type %}">{{ post.title }}</a></h2>
+                        <p class="article-content">{{ post.content }}</p>
+                      </div>
+                    </article>
+                {% endfor %}
+        </div>
+         <div class="col-sm-6">
             <div class="card-deck">
                 <div class="card">
-                    <img src="https://image.tmdb.org/t/p/original{{poster_path}}" alt="{{name}}" class="card-img-top">
                     <div class="card-deck">
                         <div class="card">
                             <div class="card-body">
-                                
+
                                 <h5 class="card-title">
                                     {% if homepage %}
                                     <a href="{{homepage}}">{{name}}</a>
@@ -23,53 +38,58 @@
                                 <p class="card-text">
                                     {{ overview }}
                                 </p>
+                            </div>
 
+                <!--        GENRES AND PRODUCTION COMPANIES        -->
+
+                            <div class="card-body justify-content-center" id="genre-and-production-company">
                                 {% if genres %}
-                                <div class="row justify-content-left">
-                                    <h6 class="card-text" style="font-size: 1.2em">
-                                        {% for item in genres %}
-                                        {% if forloop.last %}
-                                         {{ item.name }}
-                                        {% else %}
-                                         {{ item.name }},
-                                        {% endif %}
-                                        {%  endfor %}
-                                    </h6>
-                                    {% if production_companies %}
-                                    <p>
-                                        {% for item in production_companies %}
-                                        {% if forloop.last %}
-                                         {{ item.name }}
-                                        {% else %}
-                                         {{ item.name }},
-                                        {% endif %}
-                                        {%  endfor %}
-                                    </p>
-                                    {% endif %}
-
-
-
-                                </div>
+                                <h6 class="card-title" style="font-size: 1.2em">
+                                {% for item in genres %}
+                                {% if forloop.last %}
+                                 {{ item.name }}
+                                {% else %}
+                                 {{ item.name }},
                                 {% endif %}
-<!--            RELEASE DATE INFORMATION                    -->
-                                <div class="row" id="release-details">
-                                    {% if release_date %}
+                                {%  endfor %}
+                                </h6>
+
+                                {% if production_companies %}
+                                <p class="card-subtitle">
+                                    {% for item in production_companies %}
+                                    {% if forloop.last %}
+                                     {{ item.name }}
+                                    {% else %}
+                                     {{ item.name }},
+                                    {% endif %}
+                                    {%  endfor %}
+                                </p>
+                                {% endif %}
+                                {% endif %}
+                            </div>
+
+                <!--          END GENRES AND PRODUCTION COMPANY  -->
+                <!--          RELEASE DATE INFORMATION           -->
+
+                            <div class="card-body" id="release-details">
+                                <div class="row">
+                                    {% if release_date is not None %}
                                     <div class="col-xs-6 col-md-6">
                                         <h4>Release Date: </h4>
                                         <p>{{ release_date }}</p>
                                     </div>
                                     {% endif %}
 
-                                    {% if runtime %}
+                                    {% if runtime is not None %}
                                     <div class="col-xs-6 col-md-6">
                                         <h4>Running Time: </h4>
 
-                                        <p>{{runtime}}</p>
+                                        <p>{{runtime}} minutes</p>
 
                                     </div>
                                     {% endif %}
 
-                                    {% if revenue %}
+                                    {% if revenue is not None %}
                                     <div class="col-xs-6 col-md-6">
                                         <h4>Box Office: </h4>
                                         <p>{{revenue}}</p>
@@ -82,18 +102,25 @@
                                         <p>{{vote_average}}/10</p>
                                     </div>
                                     {% endif %}
-
-
                                 </div>
+                            </div>
+
+            <!--      END RELEASE DATE INFO         -->
+            <!--            OUTSIDE LINKS           -->
+                            <div class="card-body" id="links">
+                                {% if media_type == 'movie' and imdb_id %}
+                                <a class="btn btn-primary" style="background-color: darkblue; color: #DAF7A6; border: black;" role="button" href="https://www.imdb.com/title/{{imdb_id}}">IMDb</a>
+                                {% endif %}
+                                <a href="/{{media_type}}/{{id}}/new">New Post</a>
                             </div>
                         </div>
                     </div>
+                    <img src="https://image.tmdb.org/t/p/original{{poster_path}}" alt="{{name}}" class="card-img-top">
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="container">
-    <div>FORM GO HERE</div>
-</div>
+
 {% endblock content %}

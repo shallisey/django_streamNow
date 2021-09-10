@@ -54,16 +54,38 @@
     <div class="container">
       <div class="row justify-content-center">
         {% for item in data %}
-          <div class="col-sm-6 col-md-4 col-lg-4">
+          <div class="col-sm-6 col-md-6 col-lg-6">
             <div class="card-deck">
               <div class="card">
                 <img src="https://image.tmdb.org/t/p/w342{{item.poster_path}}" alt="{{item.title}}" class="card-img-top">
                 <div class="card-body">
-                  <h5 class="card-title">{{ item.title }}</h5>
-                  <p class="card-text">
-                    {{ item.overview }}
-                  </p>
-                  <a href="/{{item.media_type}}/{{item.id}}" class="btn btn-primary">{{item.media_type}}/{{item.id}}</a>
+                  {% if item.name %}
+                  <h5 class="card-title">{{ item.name }}</h5>
+                  {% else %}
+                  <h5 class="card-title">{{ item.original_title }}</h5>
+                  {% endif %}
+          <!-- ACCORDION FOR OVERVIEW -->
+                    <div id="accordion">
+                      <div id="heading{{ forloop.counter0 }}">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ forloop.counter0 }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter0 }}">
+                            Overview
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="collapse{{ forloop.counter0 }}" class="collapse" aria-labelledby="heading{{ forloop.counter0 }}" data-parent="#accordion">
+                        <div class="card-body">
+                          {{ item.overview }}
+                        </div>
+                      </div>
+                    </div>
+          <!--      END ACCORDION       -->
+
+                    {% if item.original_title %}
+                    <a href="/{{item.media_type}}/{{item.id}}" class="btn btn-primary">{{item.original_title}}</a>
+                    {% else %}
+                    <a href="/tv/{{item.id}}" class="btn btn-primary">{{item.name}}</a>
+                    {% endif %}
                 </div>
               </div>
             </div>
