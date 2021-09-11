@@ -1,8 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
     View,
+    ListView,
     DetailView,
-    CreateView
+    CreateView,
+    UpdateView,
+    DeleteView
 )
 from django.contrib import messages
 from .models import Post
@@ -53,7 +57,7 @@ class HomePage(View):
         pass
 
 
-class MediaDetailView(DetailView):
+class PostListVIew(ListView):
 
     model = Post
 
@@ -69,21 +73,21 @@ class MediaDetailView(DetailView):
         # Title, overview, image, rating, genres, maybe similar movies
         if response:
             context = media_detail_helper(response, media_type, _id, context)
-        return render(request, 'streamNow/media_detail.html', context)
+        return render(request, 'streamNow/post_list.html', context)
 
     # def post(self, request):
     #     pass
 
-class PostCreateView(CreateView):
-    model = Post
 
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
 
     fields = ['title', 'content']
 
     def form_valid(self, form):
         # Grab media_type and_id from the URL
         value = self.request.get_full_path()
-        media_type_and_id = value.split("/")[1:-2]
+        media_type_and_id = value.split("/")[2:-2]
         media_type, _id = media_type_and_id[0], media_type_and_id[1]
 
         # Add values to the form that are not seen
@@ -94,21 +98,53 @@ class PostCreateView(CreateView):
         return super().form_valid(form)
 
 
+class PostDetailView(DetailView):
+    model = Post
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+        # Grab media_type and_id from the URL
+        value = self.request.get_full_path()
+        media_type_and_id = value.split("/")[2:-2]
+        media_type, _id = media_type_and_id[0], media_type_and_id[1]
+
+        # Add values to the form that are not seen
+        form.instance.author = self.request.user
+        form.instance.media_type = media_type
+        form.instance.id_media_type = _id
+
+        return super().form_valid(form)
+
+    # Test if user is the user of the post they are trying to update.
+    # Must be named tesT_func
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+
+    success_url = '/'
+
+    # Test if user is the user of the post they are trying to update.
+    # Must be named tesT_func
+    def test_func(self):
+        post = self.get_object()
+
+        if self.request.user == post.author:
+            return True
+        return False
 
 
 
-    # def get(self, request, media_type, _id):
-    #     model = Post
-    #
-    #     fields = ['title', 'content']
-    #
-    #     return render(request, 'streamNow/post_form.html')
-
-
-    # def form_valid(self, form, media_type, _id):
-    #     form.instance.author = self.request.user
-    #     # form.instance.media_type = self.request
-    #     return super().form_valid(form. media_type, _id)
 
 
 def about(request):

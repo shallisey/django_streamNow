@@ -29,7 +29,7 @@ class Post(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('media_detail', kwargs={'media_type': self.media_type, '_id': self.id_media_type})
+        return reverse('post-list', kwargs={'media_type': self.media_type, '_id': self.id_media_type})
 
 
 

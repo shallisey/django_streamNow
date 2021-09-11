@@ -1,6 +1,8 @@
 def media_detail_helper(response, media_type, _id, context):
     context['media_type'] = media_type
     context['id'] = _id
+    print(response)
+    print(context)
 
     # media_type is TV
     if media_type == 'tv':
@@ -12,7 +14,7 @@ def media_detail_helper(response, media_type, _id, context):
         context['revenue'] = None
     # media_type is movie
     else:
-        context['name'] = response['original_title']
+        context['name'] = response['title']
         context['imdb_id'] = response['imdb_id']
         context['release_date'] = response['release_date']
         context['runtime'] = response['runtime']

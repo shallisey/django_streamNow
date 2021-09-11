@@ -5,6 +5,7 @@ body{
     width: 100vw;
     justify-content: center;
     align-items: center;
+    background-color: red;
 
 }
 
@@ -105,6 +106,12 @@ ul li {
     color: white;
 }
 
+
+$mynewcolor: #F3CE13
+
+.btn-link {
+    @include button-variant($mynewcolor, darken($mynewcolor, 7.5%), darken($mynewcolor, 10%), lighten($mynewcolor,5%), lighten($mynewcolor, 10%), darken($mynewcolor,30%));
+}
 
 .text-border {
         color: white !important;
