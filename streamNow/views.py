@@ -9,6 +9,7 @@ from django.views.generic import (
     DeleteView
 )
 from django.contrib import messages
+from django.core.paginator import Paginator
 from .models import Post
 from .helper_funcs import media_detail_helper
 import requests
@@ -40,6 +41,8 @@ class HomePage(View):
     # TV SHOWS
     all_trending_tv = requests.get('https://api.themoviedb.org/3/tv/popular?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f&language=en-US&page=1').json()
 
+
+
     def get(self, request):
         top_trending = []
         if self.all_trending_movie and self.all_trending_tv:
@@ -47,8 +50,14 @@ class HomePage(View):
                 top_trending.append(self.all_trending_movie['results'][i])
                 top_trending.append(self.all_trending_tv['results'][i])
 
+        paginator = Paginator(top_trending, 6)
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+
         context = {
-            'data': top_trending
+            'data': page_obj
         }
 
         return render(request, 'streamNow/home.html', context)
@@ -61,13 +70,18 @@ class PostListVIew(ListView):
 
     model = Post
 
+
     def get(self, request, media_type, _id):
 
         response = requests.get(f'https://api.themoviedb.org/3/{media_type}/{_id}?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f&language=en-US').json()
-        posts = self.model.objects.filter(id_media_type=_id)
-        print(posts)
+        posts = self.model.objects.filter(id_media_type=_id).order_by('-date_posted')
 
-        context = {'posts': posts}
+        # Paginate amount of posts to be seen at one time
+        paginator = Paginator(posts, 3)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {'data': page_obj}
 
         # If there is a response then add values to the context
         # Title, overview, image, rating, genres, maybe similar movies

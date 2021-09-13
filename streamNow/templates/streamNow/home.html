@@ -50,6 +50,33 @@
         </a>
     </div>
 
+    <!--    Pagination logic    -->
+    <div class="container">
+      <div class="row justify-content-center m-4">
+        {% if data %}
+          {% if data.has_previous %}
+            <a class="btn btn-outline-info m-1" href="?page=1">First</a>
+            <a class="btn btn-outline-info m-1" href="?page={{ data.previous_page_number }}">Previous</a>
+          {% endif %}
+
+          {% for num in data.paginator.page_range %}
+            {% if data.number == num %}
+              <a class="btn btn-info m-1" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > data.number|add:'-3' and num < data.number|add:'3' %}
+              <a class="btn btn-outline-info m-1" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if data.has_next %}
+            <a class="btn btn-outline-info m-1" href="?page={{data.next_page_number}}">Next</a>
+            <a class="btn btn-outline-info m-1" href="?page={{ data.paginator.num_pages }}">Last</a>
+          {% endif %}
+
+        {% endif %}
+      </div>
+<!--    End pagination    -->
+    </div>
+
 
     <div class="container">
       <div class="row justify-content-center">
@@ -92,6 +119,7 @@
 
           </div>
         {% endfor %}
+
       </div>
 
 

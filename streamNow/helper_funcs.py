@@ -1,8 +1,6 @@
 def media_detail_helper(response, media_type, _id, context):
     context['media_type'] = media_type
     context['id'] = _id
-    print(response)
-    print(context)
 
     # media_type is TV
     if media_type == 'tv':
