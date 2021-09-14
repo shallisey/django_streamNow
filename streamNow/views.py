@@ -116,14 +116,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         # Grab media_type and_id from the URL
-        value = self.request.get_full_path()
-        media_type_and_id = value.split("/")[2:-2]
-        media_type, _id = media_type_and_id[0], media_type_and_id[1]
+        media_type = self.kwargs['media_type']
+        id_media_type = self.kwargs['_id']
+        print(media_type, id_media_type)
 
         # Add values to the form that are not seen
         form.instance.author = self.request.user
         form.instance.media_type = media_type
-        form.instance.id_media_type = _id
+        form.instance.id_media_type = id_media_type
 
         return super().form_valid(form)
 
