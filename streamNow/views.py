@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -10,6 +11,7 @@ from django.views.generic import (
     DeleteView
 )
 from django.contrib import messages
+from django.conf import settings
 from django.core.paginator import Paginator
 from .models import Post
 from .helper_funcs import media_detail_helper
@@ -17,10 +19,12 @@ import requests
 import pprint
 
 
+API_KEY = settings.TMDB_API_KEY
+
 
 def home(request):
 
-    data = requests.get('https://api.themoviedb.org/3/trending/movie/day?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f').json()
+    data = requests.get(f'https://api.themoviedb.org/3/trending/movie/day?api_key={API_KEY}').json()
     results = []
     # Grab data from response if there is any and get the first ten.
     if data:
@@ -37,10 +41,10 @@ def home(request):
 
 class HomePage(View):
     # MOVIES
-    all_trending_movie = requests.get('https://api.themoviedb.org/3/trending/movie/day?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f').json()
+    all_trending_movie = requests.get(f'https://api.themoviedb.org/3/trending/movie/day?api_key={API_KEY}').json()
 
     # TV SHOWS
-    all_trending_tv = requests.get('https://api.themoviedb.org/3/tv/popular?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f&language=en-US&page=1').json()
+    all_trending_tv = requests.get(f'https://api.themoviedb.org/3/tv/popular?api_key={API_KEY}&language=en-US&page=1').json()
 
 
 
@@ -74,7 +78,7 @@ class PostListVIew(ListView):
 
     def get(self, request, media_type, _id):
 
-        response = requests.get(f'https://api.themoviedb.org/3/{media_type}/{_id}?api_key=3fe16ac899ef8daf40c2fb35b0a90b5f&language=en-US').json()
+        response = requests.get(f'https://api.themoviedb.org/3/{media_type}/{_id}?api_key={API_KEY}&language=en-US').json()
         posts = self.model.objects.filter(id_media_type=_id).order_by('-date_posted')
 
         # Paginate amount of posts to be seen at one time
@@ -118,7 +122,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         # Grab media_type and_id from the URL
         media_type = self.kwargs['media_type']
         id_media_type = self.kwargs['_id']
-        print(media_type, id_media_type)
 
         # Add values to the form that are not seen
         form.instance.author = self.request.user
