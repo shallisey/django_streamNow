@@ -111,8 +111,6 @@ class UserPostListView(ListView):
         return Post.objects.filter(author=user).order_by('-date_posted')
 
 
-
-
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
 
@@ -177,12 +175,33 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
+class SearchForm(ListView):
+    template_name = 'streamNow/search_form.html'
+    context_object_name = 'data'
+    def get_queryset(self):
 
+        query = self.request.GET.get('searchQuery')
+        if query:
+            print(query)
+            tmdb_query = f'https://api.themoviedb.org/3/search/multi?api_key={API_KEY}&language=en-US&query={query}&page=1&include_adult=false'
+            r = requests.get(tmdb_query).json()['results']
+            # pprint.pprint(r)
+
+
+            paginator = Paginator(r, 4)
+            page_number = self.request.GET.get('page')
+
+            page_obj = paginator.get_page(page_number)
+
+            return page_obj
+        else:
+            print(query, 'Nothing')
+            return
 
 
 def about(request):
     return render(request, 'streamNow/about.html')
 
-def search(request):
-    print('hi from the search')
-    return render(request, 'streamNow/search.html')
+# def search(request):
+#     print('hi from the search')
+#     return render(request, 'streamNow/search_form.html')

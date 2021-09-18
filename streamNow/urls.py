@@ -6,7 +6,8 @@ from .views import (
     PostCreateView,
     PostUpdateView,
     PostDeleteView,
-    UserPostListView
+    UserPostListView,
+    SearchForm
 
 )
 from . import views
@@ -20,5 +21,5 @@ urlpatterns = [
     path('post/<str:media_type>/<int:_id>/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),  # Looks for form <model>_confirm_delete
     path('user/<str:username>/', UserPostListView.as_view(), name='user-posts'),
     path('about/', views.about, name='streamNow-about'),
-    path('search/', views.search, name='streamNow-search')
+    path('search/', SearchForm.as_view(), name='search-form')
 ]

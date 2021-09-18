@@ -1,0 +1,131 @@
+{% extends "streamNow/main.html" %}
+{% block content %}
+
+
+<div class="container pt-4" >
+    <div class="row justify-content-center">
+
+        <!-- Search form -->
+        <form action="/search" method="GET" class="col-md-6 form-group" id="search-form">
+            <div class=" search text-center">
+                <div class="form-group">
+                    <label for="search-query">Enter search here:</label>
+                    <input type="text" class="form-control" name="searchQuery" id="search-query" placeholder="">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm" id="search-button">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if data %}
+
+<!--    Pagination logic    -->
+    <div class="container pagination">
+      <div class="row justify-content-center m-4">
+        {% if data %}
+          {% if data.has_previous %}
+            <a class="btn btn-outline-info m-1 btn-sm" href="?searchQuery={{request.GET.searchQuery}}&page=1">First</a>
+            <a class="btn btn-outline-info m-1 btn-sm" href="?searchQuery={{request.GET.searchQuery}}&page={{ data.previous_page_number }}">Previous</a>
+          {% endif %}
+
+
+          {% for num in data.paginator.page_range %}
+            {% if data.number == num %}
+              <a class="btn btn-info m-1 btn-sm" href="?searchQuery={{request.GET.searchQuery}}&page={{ num }}">{{ num }}</a>
+           {% elif num > data.number|add:'-3' and num < data.number|add:'3' %}
+              <a class="btn btn-outline-info m-1 btn-sm" href="?searchQuery={{request.GET.searchQuery}}&page={{ num }}">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if data.has_next %}
+            <a class="btn btn-outline-info m-1 btn-sm" href="?searchQuery={{request.GET.searchQuery}}&page={{data.next_page_number}}">Next</a>
+            <a class="btn btn-outline-info m-1 btn-sm" href="?searchQuery={{request.GET.searchQuery}}&page={{ data.paginator.num_pages }}">Last</a>
+          {% endif %}
+
+        {% endif %}
+      </div>
+<!--    End pagination    -->
+    </div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        {% for item in data %}
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="card">
+
+                {% if item.media_type == 'person' %}
+                <img src="https://image.tmdb.org/t/p/w342{{item.profile_path}}" alt="{{item.name}}">
+                {% elif item.media_type == 'movie' or item.media_type == 'tv' %}
+                <img src="https://image.tmdb.org/t/p/w342{{item.poster_path}}" alt="{{item.name}}" class="card-img-top">
+                {% endif %}
+
+                <div class="card-body">
+                    {% if item.media_type == 'person' %}
+                    <h5 class="card-title">{{item.name}}</h5>
+                    {% else %}
+                        {% if item.name %}
+                        <a class="card-title" href="{% url 'post-list' item.media_type item.id %}">
+                            {{item.name}}
+                        </a>
+                        {% elif item.title %}
+                        <a class="card-title" href="{% url 'post-list' item.media_type item.id %}">
+                            {{item.title}}
+                        </a>
+                        {% endif %}
+                    {% endif %}
+
+<!--           ACCORDION         -->
+                    <div class="accordion">
+                        <div id="heading{{ forloop.counter0 }}">
+                            <h5 class="mb-0">
+                                {% if item.media_type == 'person' %}
+                                <button class="btn btn-link collapsed"data-toggle="collapse" data-target="#collapse{{ forloop.counter0 }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter0 }}">
+                                    Known For
+                                </button>
+                                {% elif item.media_type == 'movie' or item.media_type == 'tv' %}
+                                <button class="btn btn-link collapsed"data-toggle="collapse" data-target="#collapse{{ forloop.counter0 }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter0 }}">
+                                    Overview
+                                </button>
+                                {% endif %}
+                            </h5>
+                        </div>
+                        <div id="collapse{{ forloop.counter0 }}" class="collapse" aria-labelledby="heading{{ forloop.counter0 }}" data-parent="#accordion">
+                            <div class="card-body">
+                                {% if item.media_type == 'person' %}
+                                <div class="row">
+                                    {% for obj in item.known_for %}
+                                    <div class="col-sm-12 m-1">
+                                        {% if obj.media_type == 'tv' %}
+                                            <a href="{% url 'post-list' obj.media_type obj.id %}">{{obj.name}}</a>
+                                        {% else %}
+                                            <a href="{% url 'post-list' obj.media_type obj.id %}">{{obj.title}}</a>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{item.overview}}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+<!--           END ACCORDION         -->
+<!--                    {% if item.media_type == 'movie' or item.media_type == 'tv' %}-->
+<!--                        {% if item.original_title %}-->
+<!--                        <a href="{% url 'post-list' item.media_type item.id %}" class="btn btn-primary">{{item.original_title}}</a>-->
+<!--                        {% elif item.name %}-->
+<!--                        <a href="{% url 'post-list' item.media_type item.id %}" class="btn btn-primary">{{item.name}}</a>-->
+<!--                        {% endif %}-->
+<!--                    {% endif %}-->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}
