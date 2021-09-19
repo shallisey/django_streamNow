@@ -2,10 +2,13 @@
 
 {% load crispy_forms_tags %}
 
+{% load static %}
+
 {% block content %}
 
 <div class="container">
     <div class="row justify-content-center">
+        {% if data %}
         <div class="col-sm-6">
              {% for post in data %}
                     <article class="media content-section">
@@ -43,9 +46,9 @@
 
                         {% endif %}
                     </div>
-<!--    End pagination    -->
-
         </div>
+<!--    End pagination    -->
+        {% endif %}
          <div class="col-sm-6">
             <div class="card-deck">
                 <div class="card">
@@ -53,13 +56,14 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <h5 class="card-title">
-                                    {% if homepage %}
-                                    <a href="{{homepage}}">{{name}}</a>
-                                    {% else %}
+                                <h2 class="card-title">
                                     {{ name }}
-                                    {% endif %}
+                                </h2>
+                                {% if tagline %}
+                                <h5>
+                                    {{ tagline }}
                                 </h5>
+                                {% endif %}
                                 <p class="card-text">
                                     {{ overview }}
                                 </p>
@@ -131,6 +135,36 @@
                             </div>
 
             <!--      END RELEASE DATE INFO         -->
+
+            <!--      WATCH PROVIDERS               -->
+                            <div class="card-body" id="watch-providers">
+                                <div class="row">
+                                    <div class="col-xs-6 col-md-6">
+                                        <h4>Stream Providers: </h4>
+                                        {% if stream %}
+                                            {% for item in stream %}
+                                                <img class="m-1" src="https://image.tmdb.org/t/p/w45/{{item.logo_path}}" alt="{{item.provider_name}}">
+                                            {% endfor %}
+                                        {% else %}
+                                        <p>No Streaming Providers</p>
+                                        {% endif %}
+                                    </div>
+
+
+                                    <div class="col-xs-6 col-md-6">
+                                        <h4>Buy or Rent: </h4>
+                                        {% if buy %}
+                                            {% for item in buy %}
+                                                <img class="m-1" src="https://image.tmdb.org/t/p/w45/{{item.logo_path}}" alt="{{item.provider_name}}">
+                                            {% endfor %}
+                                        {% else %}
+                                        <p>No Buying Or Renting Options</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+            <!--      END WATCH PROVIDERS           -->
+
             <!--            OUTSIDE LINKS           -->
                             <div class="card-body" id="links">
                                 <div class="d-flex justify-content-between">
@@ -141,18 +175,30 @@
                                         </a>
                                     </button>
                                     {% endif %}
+
+                                    {% if tmdb_link %}
+                                    <button class="btn" style="background-color: #90cea1">
+                                        <a href="{{tmdb_link}}" style="color: #01b4e4" role="button" >TMDB</a>
+                                    </button>
+                                    {% else %}
+                                    {% endif %}
+
                                     {% if user.is_authenticated %}
                                     <a class="btn btn-secondary" href="{% url 'post-create' media_type id %}">New Post</a>
                                     {% else %}
                                     {% endif %}
                                 </div>
-
-
+                            </div>
+                <!--       OUTSIDE LINKS        -->
+                <!--       TMDB CREDIT          -->
+                            <div class="card-body" id="TMDB-credit">
+                                <div class="d-flex justify-content-center">
+                                    <img class="img-fluid" src="{% static 'streamNow/blue_short.jpg' %}" alt="The-Movie-Database-image">
+                                </div>
+                                <cite class="text-muted">Search powered by <a href="https://www.themoviedb.org/">TMDB</a> api.</cite>
                             </div>
                         </div>
                     </div>
-                    <img src="https://image.tmdb.org/t/p/original{{poster_path}}" alt="{{name}}" class="card-img-top">
-
                 </div>
             </div>
         </div>

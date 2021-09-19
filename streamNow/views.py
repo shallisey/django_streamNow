@@ -30,12 +30,10 @@ def home(request):
     if data:
         for i in range(9):
             results.append(data['results'][i])
-            # pprint.pprint(data['results'][i])
     context = {
         'data': results,
         'posts': Post.objects.all()
     }
-    pprint.pprint(context['posts'])
     return render(request, 'streamNow/home.html', context)
 
 
@@ -92,6 +90,21 @@ class PostListVIew(ListView):
         # Title, overview, image, rating, genres, maybe similar movies
         if response:
             context = media_detail_helper(response, media_type, _id, context)
+            try:
+                watch_providers = requests.get(f'https://api.themoviedb.org/3/{media_type}/{_id}/watch/providers?api_key={API_KEY}').json()['results']['US']
+            except KeyError:
+                watch_providers = {}
+            pprint.pprint(watch_providers)
+            if watch_providers:
+                if 'buy' in watch_providers:
+                    context['buy'] = watch_providers['buy']
+                if 'flatrate' in watch_providers:
+                    context['stream'] = watch_providers['flatrate']
+                if 'rent' in watch_providers:
+                    context['rent'] = watch_providers['rent']
+                if 'link' in watch_providers:
+                    context['tmdb_link'] = watch_providers['link']
+
         return render(request, 'streamNow/post_list.html', context)
 
     # def post(self, request):
@@ -178,6 +191,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class SearchForm(ListView):
     template_name = 'streamNow/search_form.html'
     context_object_name = 'data'
+
     def get_queryset(self):
 
         query = self.request.GET.get('searchQuery')
@@ -185,8 +199,6 @@ class SearchForm(ListView):
             print(query)
             tmdb_query = f'https://api.themoviedb.org/3/search/multi?api_key={API_KEY}&language=en-US&query={query}&page=1&include_adult=false'
             r = requests.get(tmdb_query).json()['results']
-            # pprint.pprint(r)
-
 
             paginator = Paginator(r, 4)
             page_number = self.request.GET.get('page')
